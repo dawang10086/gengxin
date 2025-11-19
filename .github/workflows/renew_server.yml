@@ -1,0 +1,35 @@
+name: Renew Servers
+
+on:
+  schedule:
+    # 每 5 分钟运行一次
+    - cron: '*/5 * * * *'
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 检出仓库中的代码
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    # 设置 Python 环境
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'  # 根据需要调整 Python 版本
+    
+    # 安装必要的依赖
+    - name: Install dependencies
+      run: |
+        pip install selenium webdriver-manager
+    
+    # 运行自动签到脚本
+    - name: Run renewal script
+      env:
+        ZENIX_USERNAME: ${{ secrets.ZENIX_USERNAME }}
+        ZENIX_PASSWORD: ${{ secrets.ZENIX_PASSWORD }}
+      run: |
+        python auto_checkin.py  # 运行自动签到脚本
