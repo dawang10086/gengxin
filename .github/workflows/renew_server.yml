@@ -22,11 +22,21 @@ jobs:
         python-version: '3.9'  # 根据需要调整 Python 版本
 
     # 安装 Chrome 和 ChromeDriver
-    - name: Set up Chromium and ChromeDriver
-      uses: browser-actions/setup-chromium@v3
-      with:
-        chromium-version: 'latest'
-    
+    - name: Install Chrome
+      run: |
+        sudo apt update
+        sudo apt install -y wget curl unzip
+        # 安装 Chromium
+        sudo apt install -y chromium-browser
+
+    - name: Install ChromeDriver
+      run: |
+        CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+        wget https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip
+        unzip chromedriver_linux64.zip
+        sudo mv chromedriver /usr/local/bin
+        sudo chmod +x /usr/local/bin/chromedriver
+
     # 安装必要的依赖
     - name: Install dependencies
       run: |
