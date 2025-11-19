@@ -5,6 +5,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 # 从 GitHub Secrets 获取用户名和密码
@@ -26,12 +28,17 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 # 打开登录页面
 driver.get("https://dash.zenix.sg/login")
 
-# 填写用户名和密码并提交
-driver.find_element(By.NAME, "username").send_keys(username)
-driver.find_element(By.NAME, "password").send_keys(password)
-driver.find_element(By.NAME, "password").send_keys(Keys.RETURN)  # 提交表单
+# 显式等待用户名输入框出现，确保页面加载完毕
+wait = WebDriverWait(driver, 10)
+username_field = wait.until(EC.presence_of_element_located((By.ID, "email")))  # 通过id定位用户名输入框
 
-# 等待登录完成
+# 填写用户名和密码并提交
+username_field.send_keys(username)
+password_field = driver.find_element(By.ID, "password")  # 通过id定位密码输入框
+password_field.send_keys(password)
+password_field.send_keys(Keys.RETURN)  # 提交表单
+
+# 等待登录完成，确保页面完全加载
 time.sleep(5)
 
 # 登录后进入到 renew 页面
