@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
 # 从 GitHub Secrets 获取用户名和密码
@@ -13,8 +14,14 @@ password = os.getenv('ZENIX_PASSWORD')  # 从 GitHub Secrets 获取密码
 if not username or not password:
     raise ValueError("请确保在 GitHub Secrets 中设置了 'ZENIX_USERNAME' 和 'ZENIX_PASSWORD'。")
 
+# 设置 ChromeOptions，启用无头模式
+chrome_options = Options()
+chrome_options.add_argument('--headless')  # 无头模式
+chrome_options.add_argument('--no-sandbox')  # 避免沙盒问题
+chrome_options.add_argument('--disable-dev-shm-usage')  # 解决共享内存问题
+
 # 设置 WebDriver
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
 # 打开登录页面
 driver.get("https://dash.zenix.sg/login")
