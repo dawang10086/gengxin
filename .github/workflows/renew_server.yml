@@ -20,6 +20,12 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'  # 根据需要调整 Python 版本
+
+    # 安装 Chrome 和 ChromeDriver
+    - name: Set up Chromium and ChromeDriver
+      uses: browser-actions/setup-chromium@v3
+      with:
+        chromium-version: 'latest'
     
     # 安装必要的依赖
     - name: Install dependencies
